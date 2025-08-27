@@ -1,17 +1,102 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { useState } from 'react';
+import { Alert, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+
+type Contact = {
+  mobile: string;
+  first_name: string;
+  last_name: string;
+  company: string;
+}
 
 export default function App() {
+  const [mobile, setMobile] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [company, setCompany] = useState('');
+
+  const emptyInputs = (): void => {
+    setMobile('');
+    setFirstName('');
+    setLastName('');
+    setCompany('');
+  };
+
+  const saveContact = async () => {
+    if (!mobile || !firstName || !lastName) {
+      Alert.alert("Error", "Please fill in the details");
+      return;
+    }
+
+    const newContact: Contact = {
+      mobile,
+      first_name: firstName,
+      last_name: lastName,
+      company
+    };
+
+    try {
+      const res = await fetch("https://9c387e8d1059.ngrok-free.app/Web5/SaveContact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newContact)
+      });
+
+      const text = await res.text();
+      const data = text ? JSON.parse(text) : { message: res.statusText };
+
+      if (res.ok) {
+        Alert.alert("Success", data.message);
+        emptyInputs();
+      } else {
+        Alert.alert("Error", data.message);
+      }
+
+    } catch (error) {
+      Alert.alert("Error", (error as Error).message);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Contact Book</Text>
+      <Text style={styles.text1}>Create a new contact</Text>
 
-      <Text style={styles.text1}>Mobile</Text>
       <TextInput
         style={styles.input1}
-        placeholder='Enter mobile'
+        placeholder='Mobile'
         keyboardType="phone-pad"
+        value={mobile}
+        onChangeText={setMobile}
       />
+      <TextInput
+        style={styles.input1}
+        placeholder='First Name'
+        value={firstName}
+        onChangeText={setFirstName}
+      />
+      <TextInput
+        style={styles.input1}
+        placeholder='Last Name'
+        value={lastName}
+        onChangeText={setLastName}
+      />
+      <TextInput
+        style={styles.input1}
+        placeholder='Company'
+        value={company}
+        onChangeText={setCompany}
+      />
+
+      <Pressable
+        style={({ pressed }) => [
+          styles.pressableButton,
+          pressed && { backgroundColor: '#007bffcc' }
+        ]}
+        onPress={saveContact}
+      >
+        <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>Save</Text>
+      </Pressable>
 
       <StatusBar style="auto" />
     </View>
@@ -49,4 +134,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontSize: 16,
   },
+  pressableButton: {
+    backgroundColor: '#007bff',
+    padding: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 10,
+    width: '100%',
+  }
 });
