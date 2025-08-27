@@ -36,7 +36,7 @@ export default function App() {
     };
 
     try {
-      const res = await fetch("https://9c387e8d1059.ngrok-free.app/Web5/SaveContact", {
+      const res = await fetch("*/Web5/SaveContact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newContact)
