@@ -32,7 +32,7 @@ export default function SignUpScreen() {
 
     const laodCitites = async () => {
 
-      const response = await fetch(PUBLIC_URL + "/Notebook/LoadCitites");
+      const response = await fetch(PUBLIC_URL + "/Notebook/LoadCities");
       if (response.ok) {
         const json = await response.json();
         setCities(json);
