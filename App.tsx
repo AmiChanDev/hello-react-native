@@ -30,7 +30,7 @@ export default function SignUpScreen() {
 
   useEffect(() => {
 
-    const laodCitites = async () => {
+    const loadCities = async () => {
 
       const response = await fetch(PUBLIC_URL + "/Notebook/LoadCities");
       if (response.ok) {
@@ -43,7 +43,7 @@ export default function SignUpScreen() {
 
     }
 
-    laodCitites();
+    loadCities();
 
   }, []);
 
@@ -226,10 +226,6 @@ export default function SignUpScreen() {
                     textBody: "Failed to create account. Please try again.",
                   });
                 }
-
-
-
-
               }}
 
             >
